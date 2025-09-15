@@ -1,35 +1,106 @@
 [
   {
-    "id": "kepala_benjol",
-    "title": "Kepala Benjol",
-    "definition": "Benjolan akibat benturan pada kepala.",
+    "id": "demam",
+    "title": "Demam Pada Anak",
+    "definition": "Demam adalah suhu tubuh ≥38°C. Pantau gejala lain dan hidrasi.",
     "steps": [
-      "Kompres es 10-15 menit",
-      "Pantau 24-48 jam",
-      "Segera ke rumah sakit bila muntah/kehilangan kesadaran"
+      "Ukur suhu dengan termometer.",
+      "Berikan cairan lebih sering.",
+      "Bisa beri parasetamol sesuai dosis berat badan.",
+      "Kompres hangat (bukan air dingin/es).",
+      "Jika >48 jam/kejang/tampak sangat lemah, ke fasilitas kesehatan."
     ],
-    "video": ""
+    "video": "https://www.youtube.com/watch?v=2Vv1G4THTRk"
   },
   {
-    "id": "luka",
-    "title": "Luka Ringan",
-    "definition": "Luka pada kulit akibat benturan atau benda tajam.",
+    "id": "kejang-demam",
+    "title": "Kejang Demam",
+    "definition": "Kejang yang dipicu demam pada anak, biasanya singkat dan membaik sendiri.",
     "steps": [
-      "Cuci tangan",
-      "Bersihkan dengan air mengalir",
-      "Tutup dengan perban steril"
+      "Letakkan anak di permukaan aman miring (posisi pemulihan).",
+      "Jangan masukkan apapun ke mulut.",
+      "Longgarkan pakaian.",
+      "Catat durasi kejang (hubungi darurat jika >5 menit).",
+      "Setelah sadar, segera periksa ke fasilitas kesehatan."
     ],
-    "video": ""
+    "video": "https://www.youtube.com/watch?v=1vGQe2pV0O0"
+  },
+  {
+    "id": "mimisan",
+    "title": "Mimisan (Epistaksis)",
+    "definition": "Perdarahan dari hidung, sering karena iritasi atau udara kering.",
+    "steps": [
+      "Dudukkan anak dan condongkan badan sedikit ke depan.",
+      "Tekan bagian lunak hidung selama 10 menit tanpa lepas.",
+      "Kompres dingin di pangkal hidung.",
+      "Hindari meniup hidung/bersin kuat selama beberapa jam.",
+      "Ke fasilitas kesehatan jika perdarahan tidak berhenti >20 menit."
+    ],
+    "video": "https://www.youtube.com/watch?v=8p-TbQjJm9k"
   },
   {
     "id": "tersedak",
-    "title": "Tersedak",
-    "definition": "Benda menyumbat saluran napas.",
+    "title": "Tersedak (Anak >1 tahun)",
+    "definition": "Sumbatan jalan napas akibat benda/makanan.",
     "steps": [
-      "Tanya korban untuk batuk",
-      "5 tepukan punggung",
-      "Heimlich jika perlu"
+      "Jika batuk efektif, biarkan batuk.",
+      "Jika tidak bisa bicara/napas: lakukan 5 pukulan punggung di antara tulang belikat.",
+      "Lanjut 5 dorongan abdominal (Heimlich).",
+      "Ulangi 5+5 hingga benda keluar atau anak tidak sadar.",
+      "Jika tidak sadar: telepon darurat, mulai CPR."
     ],
-    "video": ""
+    "video": "https://www.youtube.com/watch?v=PA9bP0s7S1E"
+  },
+  {
+    "id": "luka-kecil",
+    "title": "Luka Kecil & Lecet",
+    "definition": "Cedera ringan pada kulit.",
+    "steps": [
+      "Cuci tangan.",
+      "Bilas luka dengan air mengalir 5–10 menit.",
+      "Bersihkan area sekitar dengan sabun (hindari sabun ke dalam luka).",
+      "Keringkan dan oles antiseptik tipis.",
+      "Tutup perban jika perlu dan ganti tiap hari."
+    ],
+    "video": "https://www.youtube.com/watch?v=n4gx6r3PZy0"
+  },
+  {
+    "id": "luka-bakar-ringan",
+    "title": "Luka Bakar Ringan",
+    "definition": "Kemerahan/nyeri tanpa melepuh luas.",
+    "steps": [
+      "Dinginkan area dengan air mengalir 10–20 menit.",
+      "Lepas perhiasan/pakaian ketat di sekitar luka.",
+      "Jangan oles pasta gigi/minyak.",
+      "Tutup dengan kasa steril non-adhesif.",
+      "Ke fasilitas kesehatan jika lepuh luas/di wajah/tangan/alat kelamin."
+    ],
+    "video": "https://www.youtube.com/watch?v=3m1p5F4VqW4"
+  },
+  {
+    "id": "diare",
+    "title": "Diare & Dehidrasi Ringan",
+    "definition": "BAB cair >3x/24 jam. Risiko dehidrasi pada anak tinggi.",
+    "steps": [
+      "Berikan oralit/larutan rehidrasi sedikit-sedikit tapi sering.",
+      "Lanjutkan ASI/makan biasa sesuai toleransi.",
+      "Zink sesuai anjuran tenaga kesehatan.",
+      "Waspada tanda dehidrasi (haus berat, mata cekung, lemas).",
+      "Ke fasilitas kesehatan jika ada darah/tipe cair sekali dan sering."
+    ],
+    "video": "https://www.youtube.com/watch?v=Q3f1vQw2gqc"
+  },
+  {
+    "id": "asma",
+    "title": "Serangan Asma",
+    "definition": "Sesak napas mengi karena penyempitan saluran napas.",
+    "steps": [
+      "Dudukkan anak tegak, tenangkan.",
+      "Gunakan inhaler bronkodilator sesuai rencana aksi (spacer).",
+      "Jika tidak membaik dalam 5–10 menit, ulangi dosis sesuai anjuran.",
+      "Hindari pemicu (asap, debu).",
+      "Segera ke IGD jika memburuk/kulit pucat/kebiruan."
+    ],
+    "video": "https://www.youtube.com/watch?v=0Qd9KJ9N5GM"
   }
 ]

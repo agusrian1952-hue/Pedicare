@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PediCare — Home</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body{font-family:Arial;background:linear-gradient(180deg,#fff6f4,#f9fbfb);margin:0;color:#222}
+    .container{max-width:980px;margin:0 auto;padding:18px}
+    .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);margin-top:14px}
+    .nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+    .tile{background:#fff;padding:14px;border-radius:12px;cursor:pointer}
+    .small{font-size:13px;color:#666}
+  </style>
+</head>
+<body>
+<div class="container">
+  <div style="display:flex;gap:12px;align-items:center">
+    <img src="icons/icon-192.png" width="64" height="64">
+    <div>
+      <h2 style="margin:0;color:#ff6b57">PediCare</h2>
+      <div class="small" id="uemail"></div>
+    </div>
+    <div style="margin-left:auto">
+      <button onclick="logout()" style="padding:8px 12px;border-radius:8px;background:#ff7a66;color:#fff;border:none">Keluar</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="nav">
+      <div class="tile" onclick="show('guides')">📘 Panduan<div class="small">Langkah pertolongan</div></div>
+      <div class="tile" onclick="show('sos')">📞 SOS<div class="small">Darurat</div></div>
+      <div class="tile" onclick="show('videos')">🎥 Video<div class="small">Edukasi</div></div>
+      <div class="tile" onclick="show('quiz')">🧩 Latihan<div class="small">Tes singkat</div></div>
+    </div>
+    <div id="content" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDAMRd6Kyzx3ye7CG_F52GSh1BgAmgKFVE",
+    authDomain: "pedicare-ffc58.firebaseapp.com",
+    projectId: "pedicare-ffc58",
+    storageBucket: "pedicare-ffc58.appspot.com",
+    messagingSenderId: "126930532886",
+    appId: "1:126930532886:web:16c00015eb7e687a77d337"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  function logout(){ signOut(auth).then(()=> location.href='index.html'); }
+
+  function show(id){
+    const content = document.getElementById('content');
+    if(id==='guides'){
+      fetch('data.json').then(r=>r.json()).then(data=>{
+        content.innerHTML = '<h3>Panduan</h3>'+data.map(d=>
+          `<div style="padding:10px;border-radius:8px;background:#fff;margin-bottom:8px">
+             <strong>${d.title}</strong>
+             <div class="small">${d.definition}</div>
+             <div style="margin-top:6px"><button onclick="showDetail('${d.id}')">Lihat</button></div>
+           </div>`
+        ).join('');
+      });
+    } else if(id==='sos'){
+      content.innerHTML = '<h3>SOS</h3><button onclick="callEmergency()">📞 Panggil 112</button><button onclick="sendLocation()">📍 Kirim Lokasi via WA</button>';
+    } else if(id==='videos'){
+      fetch('data.json').then(r=>r.json()).then(data=>{
+        content.innerHTML = '<h3>Video Edukasi</h3>'+data.map(d=>
+          `<div style="padding:10px;border-radius:8px;background:#fff;margin-bottom:8px">
+             <strong>${d.title}</strong>
+             <div class="small">${d.definition}</div>
+             <div style="margin-top:6px"><a href="${d.video}" target="_blank">Tonton</a></div>
+           </div>`
+        ).join('');
+      });
+    } else if(id==='quiz'){
+      content.innerHTML = '<h3>Latihan singkat</h3><div><button onclick="alert('Latihan belum diisi')">Mulai</button></div>';
+    }
+  }
+
+  window.showDetail = (id)=>{
+    fetch('data.json').then(r=>r.json()).then(data=>{
+      const it=data.find(x=>x.id===id);
+      document.getElementById('content').innerHTML =
+        `<h3>${it.title}</h3><p>${it.definition}</p><ol>${it.steps.map(s=>'<li>'+s+'</li>').join('')}</ol>`;
+    });
+  }
+
+  function callEmergency(){ location.href='tel:112'; }
+  function sendLocation(){
+    if(!navigator.geolocation){ alert('Geolocation tidak didukung'); return; }
+    navigator.geolocation.getCurrentPosition(pos=>{
+      const url='https://maps.google.com/?q='+pos.coords.latitude+','+pos.coords.longitude;
+      const text=encodeURIComponent('Butuh bantuan, lokasi: '+url);
+      window.open('https://wa.me/?text='+text,'_blank');
+    });
+  }
+
+  onAuthStateChanged(auth, user=>{
+    if(!user){ location.href='index.html'; }
+    else { document.getElementById('uemail').textContent = user.email; }
+  });
+</script>
+</body>
+</html>
