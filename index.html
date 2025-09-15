@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PediCare — Login</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#fff6f4,#f9fbfb);margin:0;color:#222}
+    .container{max-width:520px;margin:0 auto;padding:18px}
+    .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);margin-top:14px}
+    input{width:100%;padding:10px;border-radius:8px;border:1px solid #eee;margin-top:8px}
+    .btn{padding:10px 12px;border-radius:8px;border:none;background:#ff7a66;color:#fff;cursor:pointer;margin-top:10px}
+    .link{background:none;border:none;color:#47c2c1;cursor:pointer}
+    .small{font-size:13px;color:#666}
+  </style>
+</head>
+<body>
+<div class="container">
+  <div style="display:flex;gap:12px;align-items:center"><img src="icons/icon-192.png" width="64" height="64"><div><h1 style="margin:0;color:#ff6b57">PediCare</h1><div class="small">Daftar / Masuk dengan email</div></div></div>
+  <div class="card" id="loginCard">
+    <h3>Masuk</h3>
+    <input id="loginEmail" placeholder="Email" type="email">
+    <div style="position:relative"><input id="loginPass" placeholder="Password" type="password"><button id="toggleLoginPass" class="link" style="position:absolute;right:8px;top:8px">Tampilkan</button></div>
+    <button class="btn" onclick="doLogin()">Masuk</button>
+    <div style="margin-top:8px" class="small">Belum punya akun? <button class="link" onclick="showRegister()">Daftar</button></div>
+    <div style="margin-top:6px"><button class="link" onclick="showForgot()">Lupa kata sandi?</button></div>
+  </div>
+
+  <div class="card" id="regCard" style="display:none">
+    <h3>Daftar Akun</h3>
+    <input id="regEmail" placeholder="Email" type="email">
+    <div style="position:relative"><input id="regPass" placeholder="Password" type="password"><button id="toggleRegPass" class="link" style="position:absolute;right:8px;top:8px">Tampilkan</button></div>
+    <input id="regPass2" placeholder="Ulangi Password" type="password">
+    <button class="btn" onclick="doRegister()">Buat Akun</button>
+    <div style="margin-top:6px" class="small"><button class="link" onclick="showLogin()">Kembali ke Login</button></div>
+  </div>
+
+  <div class="card" id="forgotCard" style="display:none">
+    <h3>Reset Kata Sandi</h3>
+    <input id="forgotEmail" placeholder="Email terdaftar" type="email">
+    <button class="btn" onclick="doForgot()">Kirim Link Reset</button>
+    <div style="margin-top:6px" class="small"><button class="link" onclick="showLogin()">Batal</button></div>
+  </div>
+
+  <div id="msg" class="small" style="margin-top:12px"></div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDAMRd6Kyzx3ye7CG_F52GSh1BgAmgKFVE",
+    authDomain: "pedicare-ffc58.firebaseapp.com",
+    projectId: "pedicare-ffc58",
+    storageBucket: "pedicare-ffc58.appspot.com",
+    messagingSenderId: "126930532886",
+    appId: "1:126930532886:web:REPLACE_WITH_YOUR_APPID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const loginCard = document.getElementById('loginCard');
+  const regCard = document.getElementById('regCard');
+  const forgotCard = document.getElementById('forgotCard');
+  const msg = document.getElementById('msg');
+
+  document.getElementById('toggleLoginPass').onclick = ()=>{ const p=document.getElementById('loginPass'); p.type = p.type==='password'?'text':'password'; };
+  document.getElementById('toggleRegPass').onclick = ()=>{ const p=document.getElementById('regPass'); p.type = p.type==='password'?'text':'password'; };
+
+  window.showRegister = ()=>{ loginCard.style.display='none'; regCard.style.display='block'; forgotCard.style.display='none'; msg.textContent=''; }
+  window.showLogin = ()=>{ loginCard.style.display='block'; regCard.style.display='none'; forgotCard.style.display='none'; msg.textContent=''; }
+  window.showForgot = ()=>{ loginCard.style.display='none'; regCard.style.display='none'; forgotCard.style.display='block'; msg.textContent=''; }
+
+  window.doRegister = async ()=>{
+    const email = document.getElementById('regEmail').value.trim();
+    const pass = document.getElementById('regPass').value;
+    const pass2 = document.getElementById('regPass2').value;
+    if(!email||!pass){ msg.textContent='Email & password wajib'; return; }
+    if(pass!==pass2){ msg.textContent='Password dan konfirmasi tidak cocok'; return; }
+    try{ const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+      await sendEmailVerification(userCred.user);
+      msg.textContent = 'Akun dibuat. Cek email untuk verifikasi sebelum login.';
+      showLogin();
+    }catch(err){ msg.textContent = err.message; }
+  }
+
+  window.doLogin = async ()=>{
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    if(!email||!pass){ msg.textContent='Email & password wajib'; return; }
+    try{
+      const userCred = await signInWithEmailAndPassword(auth, email, pass);
+      if(!userCred.user.emailVerified){ msg.textContent='Email belum diverifikasi. Periksa inbox.'; auth.signOut(); return; }
+      window.location.href = 'home.html';
+    }catch(err){ msg.textContent = err.message; }
+  }
+
+  window.doForgot = async ()=>{
+    const email = document.getElementById('forgotEmail').value.trim();
+    if(!email){ msg.textContent='Masukkan email terdaftar'; return; }
+    try{ await sendPasswordResetEmail(auth, email); msg.textContent='Link reset dikirim ke email.'; showLogin(); }catch(err){ msg.textContent = err.message; }
+  }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+[
+  {
+    "id": "kepala_benjol",
+    "title": "Kepala Benjol",
+    "definition": "Benjolan akibat benturan pada kepala.",
+    "steps": [
+      "Kompres es 10-15 menit",
+      "Pantau 24-48 jam",
+      "Segera ke rumah sakit bila muntah/kehilangan kesadaran"
+    ],
+    "video": ""
+  },
+  {
+    "id": "luka",
+    "title": "Luka Ringan",
+    "definition": "Luka pada kulit akibat benturan atau benda tajam.",
+    "steps": [
+      "Cuci tangan",
+      "Bersihkan dengan air mengalir",
+      "Tutup dengan perban steril"
+    ],
+    "video": ""
+  },
+  {
+    "id": "tersedak",
+    "title": "Tersedak",
+    "definition": "Benda menyumbat saluran napas.",
+    "steps": [
+      "Tanya korban untuk batuk",
+      "5 tepukan punggung",
+      "Heimlich jika perlu"
+    ],
+    "video": ""
+  }
+]
