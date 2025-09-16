@@ -18,7 +18,7 @@
 <body>
 <div class="container">
   <div style="display:flex;gap:12px;align-items:center">
-    <img src="icons/icon-192.png" width="64" height="64">
+    <img src="icons/icon-192.png" width="64" height="64" alt="Pedicare Logo">
     <div>
       <h1 style="margin:0;color:#ff6b57">PediCare</h1>
       <div class="small">Daftar / Masuk dengan email</div>
@@ -28,10 +28,10 @@
   <!-- Login -->
   <div class="card" id="loginCard">
     <h3>Masuk</h3>
-    <input id="loginEmail" placeholder="Email" type="email">
+    <input id="loginEmail" placeholder="Email" type="email" autocomplete="username">
     <div style="position:relative">
-      <input id="loginPass" placeholder="Password" type="password">
-      <button id="toggleLoginPass" class="link" style="position:absolute;right:8px;top:8px">👁</button>
+      <input id="loginPass" placeholder="Password" type="password" autocomplete="current-password">
+      <button id="toggleLoginPass" class="link" style="position:absolute;right:8px;top:8px" aria-label="Lihat/Sembunyikan Password">👁</button>
     </div>
     <button class="btn" onclick="doLogin()">Masuk</button>
     <div class="small" style="margin-top:6px">
@@ -48,12 +48,12 @@
   <!-- Register -->
   <div class="card" id="regCard" style="display:none">
     <h3>Daftar Akun</h3>
-    <input id="regEmail" placeholder="Email" type="email">
+    <input id="regEmail" placeholder="Email" type="email" autocomplete="email">
     <div style="position:relative">
-      <input id="regPass" placeholder="Password" type="password">
-      <button id="toggleRegPass" class="link" style="position:absolute;right:8px;top:8px">👁</button>
+      <input id="regPass" placeholder="Password" type="password" autocomplete="new-password">
+      <button id="toggleRegPass" class="link" style="position:absolute;right:8px;top:8px" aria-label="Lihat/Sembunyikan Password">👁</button>
     </div>
-    <input id="regPass2" placeholder="Ulangi Password" type="password">
+    <input id="regPass2" placeholder="Ulangi Password" type="password" autocomplete="new-password">
     <button class="btn" onclick="doRegister()">Buat Akun</button>
     <div style="margin-top:6px" class="small">
       <button class="link" onclick="showLogin()">Kembali ke Login</button>
@@ -63,7 +63,7 @@
   <!-- Forgot -->
   <div class="card" id="forgotCard" style="display:none">
     <h3>Reset Kata Sandi</h3>
-    <input id="forgotEmail" placeholder="Email terdaftar" type="email">
+    <input id="forgotEmail" placeholder="Email terdaftar" type="email" autocomplete="email">
     <button class="btn" onclick="doForgot()">Kirim Link Reset</button>
     <div style="margin-top:6px" class="small">
       <button class="link" onclick="showLogin()">Batal</button>
@@ -75,7 +75,10 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+  import { 
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
+    sendPasswordResetEmail, sendEmailVerification 
+  } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDAMRd6Kyzx3ye7CG_F52GSh1BgAmgKFVE",
@@ -107,47 +110,54 @@
   window.showLogin = ()=>{ loginCard.style.display='block'; regCard.style.display='none'; forgotCard.style.display='none'; msg.textContent=''; }
   window.showForgot = ()=>{ loginCard.style.display='none'; regCard.style.display='none'; forgotCard.style.display='block'; msg.textContent=''; }
 
-  window.doRegister = async ()=>{
+  window.doRegister = async ()=> {
     const email = document.getElementById('regEmail').value.trim();
     const pass = document.getElementById('regPass').value;
     const pass2 = document.getElementById('regPass2').value;
     if(!email||!pass){ msg.textContent='Email & password wajib'; return; }
     if(pass!==pass2){ msg.textContent='Password tidak cocok'; return; }
-    try{ 
+    try{
       const userCred = await createUserWithEmailAndPassword(auth, email, pass);
       await sendEmailVerification(userCred.user);
       msg.textContent = 'Akun dibuat. Cek email untuk verifikasi.';
       showLogin();
     }catch(err){ msg.textContent = err.message; }
-  }
+  };
 
-  window.doLogin = async ()=>{
+  // Login: reload user sebelum cek emailVerified
+  window.doLogin = async ()=> {
     const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value;
     if(!email||!pass){ msg.textContent='Email & password wajib'; return; }
     try{
       const userCred = await signInWithEmailAndPassword(auth, email, pass);
+      // sinkronkan status verifikasi terbaru
+      await userCred.user.reload();
       if(!userCred.user.emailVerified){
         try{
           await sendEmailVerification(userCred.user);
-          msg.textContent = 'Email kamu belum terverifikasi. Tautan verifikasi baru sudah dikirim. Cek inbox/spam, lalu login lagi setelah klik tautannya.';
+          msg.textContent = 'Email belum terverifikasi. Tautan verifikasi baru sudah dikirim. Cek inbox/spam, lalu login lagi setelah klik tautannya.';
         }catch(e){
           msg.textContent = 'Email belum terverifikasi. Cek email sebelumnya atau coba lagi beberapa menit.';
         }
         await auth.signOut();
         return;
       }
+      // verified → lanjut ke beranda
       window.location.href = 'home.html';
-    }catch(err){ msg.textContent = err.message; }
-  }
+    }catch(err){
+      msg.textContent = err.message;
+    }
+  };
 
   // Tombol "Kirim ulang verifikasi"
-  window.resendVerification = async ()=>{
+  window.resendVerification = async ()=> {
     const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value;
     if(!email||!pass){ msg.textContent='Masukkan email & password terlebih dahulu.'; return; }
     try{
       const userCred = await signInWithEmailAndPassword(auth, email, pass);
+      await userCred.user.reload();
       if(userCred.user.emailVerified){
         msg.textContent = 'Email sudah terverifikasi. Silakan masuk.';
         await auth.signOut();
@@ -159,17 +169,17 @@
     }catch(err){
       msg.textContent = err.message;
     }
-  }
+  };
 
-  window.doForgot = async ()=>{
+  window.doForgot = async ()=> {
     const email = document.getElementById('forgotEmail').value.trim();
     if(!email){ msg.textContent='Masukkan email terdaftar'; return; }
-    try{ 
-      await sendPasswordResetEmail(auth, email); 
-      msg.textContent='Link reset dikirim ke email.'; 
-      showLogin(); 
+    try{
+      await sendPasswordResetEmail(auth, email);
+      msg.textContent='Link reset dikirim ke email.';
+      showLogin();
     }catch(err){ msg.textContent = err.message; }
-  }
+  };
 </script>
 </body>
 </html>
